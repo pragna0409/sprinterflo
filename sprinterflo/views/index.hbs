@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SprinterFlo Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <nav>
+    <h1>SPRINTERflo 🕊️</h1>
+    <h4>HI BB</h4>
+    <ul>
+      <li><a href="/">home</a></li>
+      <li><a href="/login">login</a></li>
+      <li><a href="/register">register</a></li>
+    </ul><!-- Popup Trigger -->
+<button onclick="openPopup()">Update My Info</button>
+
+<!-- Insert the full popup HTML you shared earlier here -->
+<div class="popup-form" id="popupForm">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <h2>User Details</h2>
+    <form action="/submit-user-info" method="POST">
+      <label>Age:</label>
+      <input type="number" name="age" required>
+
+      <label>Length of Menstrual Cycle (in days):</label>
+      <input type="number" name="menstrualLength" required>
+
+      <label>Mean Cycle Length (in days):</label>
+      <input type="number" name="meanCycleLength" required>
+
+      <label>Sport:</label>
+      <input type="text" name="sport" required>
+
+      <label>Weight (kg):</label>
+      <input type="number" name="weight" required step="0.1">
+
+      <label>Height (m):</label>
+      <input type="number" name="height" required step="0.01">
+
+      <label>Body Type:</label>
+      <select name="bodyType" required>
+        <option value="">Select</option>
+        <option value="apple">Apple</option>
+        <option value="triangle">Triangle</option>
+        <option value="hourglass">Hourglass</option>
+        <option value="inverted-triangle">Inverted Triangle</option>
+        <option value="rectangle">Rectangle</option>
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openPopup() {
+    document.getElementById("popupForm").style.display = "block";
+  }
+
+  function closePopup() {
+    document.getElementById("popupForm").style.display = "none";
+  }
+</script>
+{{#if showPopup}}
+<script>
+  window.onload = function () {
+    openPopup();
+  }
+</script>
+{{/if}}
+
+
+
+  </nav>
+
+  <div class="container">
+
+    <div class="cycle-info">
+      <p>Progress: 6 / 29</p>
+      <div class="date-circle">27 Jul</div>
+      <p>Next Cycle: 20-Aug</p>
+      <p><strong>Safe</strong></p>
+    </div>
+
+    <div class="section-block">
+      <h3>Doctor's Appointment</h3>
+      <div class="block-item">
+        <div class="text">
+          <img src="https://img.icons8.com/ios-filled/24/000000/doctor-male.png" alt="doctor" />
+          <span>Blood Pressure High</span>
+        </div>
+        <div class="edit">Edit</div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h3>Mood</h3>
+      <div class="block-item">
+        <div class="text">
+          <img src="https://img.icons8.com/ios-filled/24/fa314a/like--v1.png" alt="romantic" />
+          <span>Romantic</span>
+        </div>
+        <div class="edit">Edit</div>
+      </div>
+    </div>
+
+    <div class="tip-section">
+      <h4>Today's Tip</h4>
+      <p>You will definitely be feeling more confident. Your brain is super productive.</p>
+    </div>
+
+  </div>
+
+</body>
+
+<style>
+  /* === NAV BAR === */
+  nav {
+    background: #f4daf7;
+    padding: 1rem 2rem;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    font-family: 'Dancing Script', cursive;
+    box-shadow: 0 4px 8px rgb(244 218 247 / 0.4);
+  }
+  nav h1 {
+    font-size: 1.8rem;
+    color: #e06ba9;
+  }
+  nav h4 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #d94c97;
+    font-size: 1rem;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #a64c7b;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+  }
+  nav ul li a:hover {
+    color: #e06ba9;
+  }
+</style>
+
+
+</html>

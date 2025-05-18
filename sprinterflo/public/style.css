@@ -1,0 +1,328 @@
+body{
+    background-color: rgb(255, 255, 255);
+}
+nav{
+    background-color: rgb(134, 84, 221);
+    color: #fff;
+    padding: 30px 60px;
+    display: flex;
+    justify-content: space-between;
+}
+
+nav ul{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+nav li{
+    list-style: none;
+}
+nav li a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 8px;
+    
+}
+nav li a:hover{
+        color: yellow;
+        text-decoration: none;
+    }
+
+
+  /* === NAV BAR === */
+  nav {
+    background: #f4daf7;
+    padding: 1rem 2rem;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    font-family: 'Dancing Script', cursive;
+    box-shadow: 0 4px 8px rgb(244 218 247 / 0.4);
+  }
+  nav h1 {
+    font-size: 1.8rem;
+    color: #e06ba9;
+  }
+  nav h4 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #d94c97;
+    font-size: 1rem;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #a64c7b;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+  }
+  nav ul li a:hover {
+    color: #e06ba9;
+  }
+
+  /* === BODY & CONTAINER === */
+  body {
+    background-color: #fffafa;
+    font-family: 'Poppins', sans-serif;
+    color: #4a4a4a;
+    padding: 1rem;
+  }
+  .container {
+    max-width: 480px;
+    margin: 2rem auto;
+  }
+
+  /* === CYCLE INFO === */
+  .cycle-info {
+    background: #fceef9;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px dashed #e6a2d7;
+    box-shadow: 0 4px 8px rgb(246 199 246 / 0.4);
+  }
+  .cycle-info p {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .date-circle {
+    width: 120px;
+    height: 120px;
+    background: #c3e8f3;
+    color: #2a7b94;
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin: 1rem auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dotted #89cde4;
+    box-shadow: 0 0 10px #89cde4;
+  }
+
+  /* === SECTION BLOCKS === */
+  .section-block {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-radius: 20px;
+    background-color: #fdf6ff;
+    border: 1px dashed #dcb7f4;
+    box-shadow: 0 4px 8px rgb(219 174 234 / 0.2);
+  }
+  .section-block h3 {
+    color: #a85fbf;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  /* === BLOCK ITEM === */
+  .block-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f2fd;
+    padding: 0.8rem;
+    border-radius: 15px;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 0 3px rgba(173, 127, 201, 0.1);
+    font-size: 1rem;
+  }
+  .block-item .text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #5c3e7e;
+  }
+  .block-item img {
+    width: 24px;
+    height: 24px;
+  }
+  .block-item .edit {
+    font-size: 0.85rem;
+    color: #cd74e3;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .block-item .edit:hover {
+    color: #a85fbf;
+    text-decoration: underline;
+  }
+
+  /* === TIP SECTION === */
+  .tip-section {
+    padding: 1rem;
+    border-radius: 20px;
+    background: #fff5fc;
+    border: 1px dashed #eac5d9;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #6a3b6a;
+    box-shadow: 0 4px 8px rgb(234 197 217 / 0.3);
+  }
+  .tip-section h4 {
+    color: #e483ab;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    .container {
+      margin: 1rem;
+    }
+  }
+
+  
+  /* === BODY & CONTAINER === */
+  body {
+    background-color: #fffafa;
+    font-family: 'Poppins', sans-serif;
+    color: #4a4a4a;
+    padding: 1rem;
+  }
+  .container {
+    max-width: 480px;
+    margin: 2rem auto;
+  }
+
+  /* === CYCLE INFO === */
+  .cycle-info {
+    background: #fceef9;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px dashed #e6a2d7;
+    box-shadow: 0 4px 8px rgb(246 199 246 / 0.4);
+  }
+  .cycle-info p {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .date-circle {
+    width: 120px;
+    height: 120px;
+    background: #c3e8f3;
+    color: #2a7b94;
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin: 1rem auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dotted #89cde4;
+    box-shadow: 0 0 10px #89cde4;
+  }
+
+  /* === SECTION BLOCKS === */
+  .section-block {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-radius: 20px;
+    background-color: #fdf6ff;
+    border: 1px dashed #dcb7f4;
+    box-shadow: 0 4px 8px rgb(219 174 234 / 0.2);
+  }
+  .section-block h3 {
+    color: #a85fbf;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  /* === BLOCK ITEM === */
+  .block-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f2fd;
+    padding: 0.8rem;
+    border-radius: 15px;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 0 3px rgba(173, 127, 201, 0.1);
+    font-size: 1rem;
+  }
+  .block-item .text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #5c3e7e;
+  }
+  .block-item img {
+    width: 24px;
+    height: 24px;
+  }
+  .block-item .edit {
+    font-size: 0.85rem;
+    color: #cd74e3;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .block-item .edit:hover {
+    color: #a85fbf;
+    text-decoration: underline;
+  }
+
+  /* === TIP SECTION === */
+  .tip-section {
+    padding: 1rem;
+    border-radius: 20px;
+    background: #fff5fc;
+    border: 1px dashed #eac5d9;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #6a3b6a;
+    box-shadow: 0 4px 8px rgb(234 197 217 / 0.3);
+  }
+  .tip-section h4 {
+    color: #e483ab;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    .container {
+      margin: 1rem;
+    }
+  }
+
+  .popup-form {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .popup-content {
+    background-color: #fff;
+    padding: 20px;
+    margin: 15% auto;
+    width: 30%;
+    border-radius: 8px;
+  }
+
+  .close-btn {
+    float: right;
+    cursor: pointer;
+  }
+

@@ -4,6 +4,7 @@ const mysql = require("mysql");
 const dotenv = require('dotenv');
 const session = require('express-session');
 dotenv.config({path: './.env'});
+const authRoutes = require('./sprinterflo/routes/auth');
 
 const app = express();
 // console.log(process.env.DB_HOST);
@@ -41,6 +42,7 @@ app.use(session({
 }));
 app.use('/', require('./sprinterflo/routes/pages'));
 app.use('/auth',require('./sprinterflo/routes/auth'));
+app.use(authRoutes);
 app.set('views', path.join(__dirname, 'sprinterflo/views')); // If this is inside sprinterflo//
 
   app.listen(5000, () => { 

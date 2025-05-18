@@ -35,6 +35,14 @@
           </div>
           <button type="submit" class="btn btn-success">Login</button>
         </form>
+        {{#if jwt}}
+          <script>
+            localStorage.setItem('token', '{{jwt}}');
+            localStorage.setItem('user', '{{{user}}}');
+            // Redirect to dashboard
+            window.location.href = "/dashboard";
+          </script>
+        {{/if}}
       </div>
     </div>
   </div>

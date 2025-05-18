@@ -9,9 +9,19 @@ router.get('/',(req,res)=>{
 router.get('/register',(req,res)=>{
     res.render('register');
 });
+
 router.get('/login', (req, res) => {
     res.render('login');
 });
+
+router.get('/dashboard', (req, res) => {
+    // if (!req.session.userId) {
+    //     return res.redirect('/login');
+    // }
+    
+    res.render('dashboard');
+});
+
 router.get('/popup', (req, res) => {
     if (!req.session.userId) {
         return res.redirect('/login');

@@ -451,34 +451,37 @@
         font-size: 1rem;
       }
     }
-</style><link rel="stylesheet" href="/style.css">
+</style>
+<link rel="stylesheet" href="/style.css">
+ </ul><!-- Popup Trigger -->
+<button onclick="openPopup()">Update My Info</button>
+
+<!-- Insert the full popup HTML you shared earlier here -->
 <div class="popup-form" id="popupForm">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">&times;</span>
     <h2>User Details</h2>
+    <form action="/submit-user-info" method="POST">
+      <label>Age:</label>
+      <input type="number" name="age" required>
 
-    <!-- Updated form action to match backend route -->
-    <form action="/auth/popup" method="POST">
-      <label for="dob">dob:</label>
-      <input type="date" id="dob" name="age" required>
+      <label>Length of Menstrual Cycle (in days):</label>
+      <input type="number" name="menstrualLength" required>
 
-      <label for="menstrualLength">Length of Menstrual Cycle (in days):</label>
-      <input type="number" id="menstrualLength" name="menstrualLength" required>
+      <label>Mean Cycle Length (in days):</label>
+      <input type="number" name="meanCycleLength" required>
 
-      <label for="meanCycleLength">Mean Cycle Length (in days):</label>
-      <input type="number" id="meanCycleLength" name="meanCycleLength" required>
+      <label>Sport:</label>
+      <input type="text" name="sport" required>
 
-      <label for="sport">Sport:</label>
-      <input type="text" id="sport" name="sport" required>
+      <label>Weight (kg):</label>
+      <input type="number" name="weight" required step="0.1">
 
-      <label for="weight">Weight (kg):</label>
-      <input type="number" id="weight" name="weight" required step="0.1">
+      <label>Height (m):</label>
+      <input type="number" name="height" required step="0.01">
 
-      <label for="height">Height (m):</label>
-      <input type="number" id="height" name="height" required step="0.01">
-
-      <label for="bodyType">Body Type:</label>
-      <select id="bodyType" name="bodyType" required>
+      <label>Body Type:</label>
+      <select name="bodyType" required>
         <option value="">Select</option>
         <option value="apple">Apple</option>
         <option value="triangle">Triangle</option>
@@ -491,6 +494,133 @@
     </form>
   </div>
 </div>
+<style>
+/* Pink Theme Popup Overlay */
+.popup-form {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Box */
+.popup-content {
+  background: linear-gradient(to bottom right, #fff0f5, #ffe6f0);
+  margin: 5% auto;
+  padding: 30px 40px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #cc3366;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.close-btn:hover {
+  color: #ff3399;
+}
+
+/* Headline */
+.popup-content h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-family: 'Comic Sans MS', cursive;
+  color: #d63384;
+}
+
+/* Labels */
+.popup-content label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 500;
+  color: #a03c78;
+}
+
+/* Inputs and Selects */
+.popup-content input,
+.popup-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ffb3d9;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+.popup-content input:focus,
+.popup-content select:focus {
+  outline: none;
+  border-color: #ff66a3;
+  box-shadow: 0 0 5px rgba(255, 105, 180, 0.4);
+}
+
+/* Submit Button */
+.popup-content button[type="submit"] {
+  margin-top: 25px;
+  background: linear-gradient(to right, #ff66b2, #ff85a2);
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+.popup-content button[type="submit"]:hover {
+  background: linear-gradient(to right, #ff4da6, #ff7096);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: Trigger Button Style */
+button[onclick="openPopup()"] {
+  background: linear-gradient(to right, #ff99cc, #ff66b2);
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+button[onclick="openPopup()"]:hover {
+  background: linear-gradient(to right, #ff66a3, #ff3385);
+}
+</style>
+
+
 <style>
     * {
       margin: 0;
@@ -905,3 +1035,22 @@
       }
     }
 </style>
+<script>
+  function openPopup() {
+    document.getElementById("popupForm").style.display = "block";
+  }
+
+  function closePopup() {
+    document.getElementById("popupForm").style.display = "none";
+  }
+</script>
+{{#if showPopup}}
+<script>
+  window.onload = function () {
+    openPopup();
+  }
+</script>
+{{/if}}
+
+
+

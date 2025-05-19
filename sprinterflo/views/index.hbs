@@ -1,165 +1,863 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SprinterFlo Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunara - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Lora', serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 20px;
+    }
+    /* Header */
+    header {
+      background: #FF8CD9;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 15px 0;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    .logo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .menu-icon, .profile-icon {
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+    .menu-icon::before {
+      content: "☰";
+    }
+    .profile-icon::before {
+      content: "👤";
+    }
+    /* Greeting */
+    .greeting {
+      text-align: center;
+      font-family: 'Lora', serif;
+      font-size: 1.2rem;
+      color: #555;
+      padding: 15px 0;
+      background: #f8f9fa;
+    }
+    /* Side Drawer */
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #FFDBF5;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      transition: left 0.3s ease;
+      z-index: 100;
+    }
+    .side-drawer.open {
+      left: 0;
+    }
+    .side-drawer .drawer-header {
+      padding: 15px;
+      border-bottom: 1px solid #F062C0;
+      display: flex;
+      justify-content: flex-start;
+    }
+    .side-drawer .back-btn {
+      background: none;
+      border: none;
+      color: #F062C0;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .side-drawer ul {
+      list-style: none;
+      padding: 20px;
+    }
+    .side-drawer li {
+      margin-bottom: 15px;
+    }
+    .side-drawer a, .side-drawer button {
+      color: #F062C0;
+      text-decoration: none;
+      font-size: 1rem;
+      font-family: 'Lora', serif;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .side-drawer a:hover, .side-drawer button:hover {
+      color: #FF8CD9;
+    }
+    /* Profile Dropdown */
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background: #FFDBF5;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 100;
+    }
+    .profile-dropdown.open {
+      display: block;
+    }
+    .profile-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #FEC8EC;
+      margin: 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .profile-dropdown button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: none;
+      border: none;
+      color: #F062C0;
+      font-family: 'Lora', serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .profile-dropdown button:hover {
+      background: #FEC8EC;
+    }
+    /* Main Layout */
+    .main-content {
+      flex: 1;
+      padding: 20px 0; /* Reduced padding to adjust for greeting */
+    }
+    /* Calendar Section */
+    .calendar-section h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: #F062C0;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .calendar-header button {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #FF8CD9;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      text-align: center;
+    }
+    .calendar-grid .day-header {
+      font-weight: bold;
+      color: #555;
+      padding: 10px 0;
+    }
+    .calendar-day {
+      position: relative;
+      padding: 10px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .calendar-day.empty {
+      background: #f0f0f0;
+    }
+    .calendar-day .date-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .calendar-day.yellow .date-circle {
+      border: 2px solid #FFD700;
+    }
+    .calendar-day.red .date-circle {
+      border: 2px solid #FF0000;
+    }
+    .calendar-day.blue .date-circle {
+      border: 2px solid #00BFFF;
+    }
+    .calendar-day.green .date-circle {
+      border: 2px solid #32CD32;
+    }
+    .calendar-day.red .flow-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #FF0000;
+      z-index: 0;
+    }
+    .flow-fill.light {
+      height: 33%;
+    }
+    .flow-fill.medium {
+      height: 66%;
+    }
+    .flow-fill.heavy {
+      height: 100%;
+    }
+    /* Right Panel */
+    .right-panel {
+      width: 300px;
+      padding: 20px;
+    }
+    .panel-card {
+      background: #FEC8EC;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+    }
+    .panel-card h3 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: #FF8CD9;
+      margin-bottom: 10px;
+    }
+    .mood-tracker .emojis {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .mood-tracker .emoji {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .mood-tracker .emoji.selected {
+      border: 2px solid #F062C0;
+      border-radius: 50%;
+      padding: 2px;
+    }
+    .water-tracker .water-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      justify-content: center;
+    }
+    .water-tracker .glasses {
+      display: flex;
+      gap: 3px;
+    }
+    .water-tracker .glass {
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .water-tracker .glass.empty::before {
+      content: "🥛";
+    }
+    .water-tracker .glass.filled::before {
+      content: "💧";
+    }
+    .water-tracker .add-glass, .water-tracker .subtract-glass {
+      background: #FF8CD9;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .water-tracker .add-glass:hover, .water-tracker .subtract-glass:hover {
+      background: #F062C0;
+    }
+    .symptoms-tracker .dropdown-btn {
+      background: none;
+      border: none;
+      color: #F062C0;
+      font-family: 'Lora', serif;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .symptoms-content {
+      display: none;
+      margin-top: 10px;
+    }
+    .symptoms-content.open {
+      display: block;
+    }
+    .symptoms-content label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .symptoms-content input[type="text"] {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .symptoms-content .save-btn {
+      background: #FF8CD9;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .symptoms-content .save-btn:hover {
+      background: #F062C0;
+    }
+    .navigation-btn {
+      display: block;
+      width: 100%;
+      background: #FF8CD9;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Lora', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+    .navigation-btn:hover {
+      background: #F062C0;
+    }
+    /* Footer */
+    footer {
+      background: #F062C0;
+      color: white;
+      padding: 40px 0;
+      margin-top: 40px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    footer h3 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+    footer p, footer a {
+      font-size: 0.9rem;
+      color: #FFDBF5;
+      font-family: 'Lora', serif;
+    }
+    footer a {
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+    footer a:hover {
+      color: white;
+    }
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #FFDBF5;
+      font-family: 'Lora', serif;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .right-panel {
+        width: 100%;
+      }
+      .calendar-section h2 {
+        font-size: 1.8rem;
+      }
+      .calendar-day {
+        height: 50px;
+      }
+      .calendar-day .date-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+      }
+      .water-tracker .glass {
+        font-size: 0.9rem;
+      }
+      .greeting {
+        font-size: 1rem;
+      }
+    }
   
-  <link rel="stylesheet" href="/style.css">
+  </style>
+
 </head>
 <body>
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="menu-icon" id="menuIcon"></div>
+      <div class="logo">Lunara</div>
+      <div class="profile-icon" id="profileIcon"></div>
+    </nav>
+  </header>
 
-  <nav>
-    <h1>SPRINTERflo 🕊️</h1>
-    <h4>HI BB</h4>
+  <!-- Greeting -->
+  <div class="greeting" id="greeting"></div>
+
+  <!-- Side Drawer -->
+  <div class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+      <button class="back-btn" id="closeDrawerBtn">←</button>
+    </div>
     <ul>
-      <li><a href="/">home</a></li>
-      <li><a href="/login">login</a></li>
-      <li><a href="/register">register</a></li>
-    </ul><!-- Popup Trigger -->
-<button onclick="openPopup()">Update My Info</button>
-
-<!-- Insert the full popup HTML you shared earlier here -->
-<div class="popup-form" id="popupForm">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <h2>User Details</h2>
-    <form action="/submit-user-info" method="POST">
-      <label>Age:</label>
-      <input type="number" name="age" required>
-
-      <label>Length of Menstrual Cycle (in days):</label>
-      <input type="number" name="menstrualLength" required>
-
-      <label>Mean Cycle Length (in days):</label>
-      <input type="number" name="meanCycleLength" required>
-
-      <label>Sport:</label>
-      <input type="text" name="sport" required>
-
-      <label>Weight (kg):</label>
-      <input type="number" name="weight" required step="0.1">
-
-      <label>Height (m):</label>
-      <input type="number" name="height" required step="0.01">
-
-      <label>Body Type:</label>
-      <select name="bodyType" required>
-        <option value="">Select</option>
-        <option value="apple">Apple</option>
-        <option value="triangle">Triangle</option>
-        <option value="hourglass">Hourglass</option>
-        <option value="inverted-triangle">Inverted Triangle</option>
-        <option value="rectangle">Rectangle</option>
-      </select>
-
-      <button type="submit">Submit</button>
-    </form>
+      <li><a href="#">Notifications</a></li>
+      <li><a href="#">Settings</a></li>
+      <li><a href="#">Help</a></li>
+      <li><button id="logoutBtn">Logout</button></li>
+    </ul>
   </div>
-</div>
 
-<script>
-  function openPopup() {
-    document.getElementById("popupForm").style.display = "block";
-  }
+  <!-- Profile Dropdown -->
+  <div class="profile-dropdown" id="profileDropdown">
+    <div class="profile-photo">👤</div>
+    <button id="editPhotoBtn">Edit Profile Photo</button>
+    <button id="editInfoBtn">Edit Registration Info</button>
+  </div>
 
-  function closePopup() {
-    document.getElementById("popupForm").style.display = "none";
-  }
-</script>
-{{#if showPopup}}
-<script>
-  window.onload = function () {
-    openPopup();
-  }
-</script>
-{{/if}}
-
-
-
-  </nav>
-
+  <!-- Main Content -->
   <div class="container">
-
-    <div class="cycle-info">
-      <p>Progress: 6 / 29</p>
-      <div class="date-circle">27 Jul</div>
-      <p>Next Cycle: 20-Aug</p>
-      <p><strong>Safe</strong></p>
-    </div>
-
-    <div class="section-block">
-      <h3>Doctor's Appointment</h3>
-      <div class="block-item">
-        <div class="text">
-          <img src="https://img.icons8.com/ios-filled/24/000000/doctor-male.png" alt="doctor" />
-          <span>Blood Pressure High</span>
+    <!-- Calendar Section -->
+    <div class="main-content">
+      <section class="calendar-section">
+        <h2>Track Your Cycle</h2>
+        <div class="calendar-header">
+          <button id="prevMonth">←</button>
+          <span id="currentMonth">May 2025</span>
+          <button id="nextMonth">→</button>
         </div>
-        <div class="edit">Edit</div>
-      </div>
-    </div>
-
-    <div class="section-block">
-      <h3>Mood</h3>
-      <div class="block-item">
-        <div class="text">
-          <img src="https://img.icons8.com/ios-filled/24/fa314a/like--v1.png" alt="romantic" />
-          <span>Romantic</span>
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Calendar will be populated by JavaScript -->
         </div>
-        <div class="edit">Edit</div>
+      </section>
+    </div>
+
+    <!-- Right Panel -->
+    <aside class="right-panel">
+      <div class="panel-card mood-tracker">
+        <h3>Log Your Mood</h3>
+        <div class="emojis" id="moodEmojis">
+          <span class="emoji" data-mood="sad">😞</span>
+          <span class="emoji" data-mood="unhappy">☹</span>
+          <span class="emoji" data-mood="neutral">😐</span>
+          <span class="emoji" data-mood="happy">🙂</span>
+          <span class="emoji" data-mood="very-happy">😁</span>
+        </div>
       </div>
-    </div>
-
-    <div class="tip-section">
-      <h4>Today's Tip</h4>
-      <p>You will definitely be feeling more confident. Your brain is super productive.</p>
-    </div>
-
+      <div class="panel-card water-tracker">
+        <h3>Water Intake</h3>
+        <div class="water-controls">
+          <button class="subtract-glass" id="subtractWaterBtn">−</button>
+          <div class="glasses" id="waterGlasses">
+            <span class="glass empty"></span>
+            <span class="glass empty"></span>
+            <span class="glass empty"></span>
+            <span class="glass empty"></span>
+            <span class="glass empty"></span>
+            <span class="glass empty"></span>
+          </div>
+          <button class="add-glass" id="addWaterBtn">+</button>
+        </div>
+      </div>
+      <div class="panel-card symptoms-tracker">
+        <h3>Symptoms</h3>
+        <button class="dropdown-btn" id="symptomsBtn">Log your symptoms ⌄</button>
+        <div class="symptoms-content" id="symptomsContent">
+          <label><input type="checkbox" name="symptom" value="cramps"> Cramps</label>
+          <label><input type="checkbox" name="symptom" value="fatigue"> Fatigue</label>
+          <label><input type="checkbox" name="symptom" value="acne"> Acne</label>
+          <label><input type="checkbox" name="symptom" value="bloating"> Bloating</label>
+          <input type="text" id="customSymptom" placeholder="Add custom symptom">
+          <button class="save-btn" id="saveSymptomsBtn">Save</button>
+        </div>
+      </div>
+      <div class="panel-card">
+        <a href="fridge.html" class="navigation-btn">Track your meals →</a>
+      </div>
+      <div class="panel-card">
+        <a href="exercise.html" class="navigation-btn">Let’s workout! →</a>
+      </div>
+    </aside>
   </div>
 
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>Lunara</h3>
+          <p>Empowering menstruating individuals with AI-driven wellness tools.</p>
+        </div>
+        <div>
+          <h3>Links</h3>
+          <a href="#">Dashboard</a>
+          <a href="#">Support</a>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <p>Email: support@lunara.app</p>
+          <p>Phone: (123) 456-7890</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2025 Lunara. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function getToken() {
+      console.log(localStorage.getItem('token'));
+  return localStorage.getItem('token');
+
+}
+
+    // State
+    let currentDate = new Date('2025-05-17');
+    let selectedDate = new Date(currentDate);
+    let dailyLogs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+
+    // Load profile data
+    const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+    let startDate = profileData.lastPeriod ? new Date(profileData.lastPeriod) : new Date('2025-05-01');
+    let periodLength = parseInt(profileData.periodLength) || 5;
+    let cycleLength = parseInt(profileData.cycleLength) || 28;
+
+    // DOM Elements
+    const calendarGrid = document.getElementById('calendarGrid');
+    const currentMonth = document.getElementById('currentMonth');
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+    const moodEmojis = document.getElementById('moodEmojis');
+    const waterGlasses = document.getElementById('waterGlasses');
+    const addWaterBtn = document.getElementById('addWaterBtn');
+    const subtractWaterBtn = document.getElementById('subtractWaterBtn');
+    const symptomsBtn = document.getElementById('symptomsBtn');
+    const symptomsContent = document.getElementById('symptomsContent');
+    const saveSymptomsBtn = document.getElementById('saveSymptomsBtn');
+    const menuIcon = document.getElementById('menuIcon');
+    const sideDrawer = document.getElementById('sideDrawer');
+    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const editPhotoBtn = document.getElementById('editPhotoBtn');
+    const editInfoBtn = document.getElementById('editInfoBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const greetingDiv = document.getElementById('greeting');
+
+    // Display Greeting
+    function displayGreeting() {
+      let userName = 'User';
+      let token = null;
+
+      if (localStorage.getItem('user')) {
+        userNameJson = JSON.parse(localStorage.getItem('user'));
+        userName = userNameJson.name || 'User';
+  }
+      const now = new Date();
+      // Adjust for IST (UTC+5:30)
+      const istOffset = 5.5 * 60; // IST is 5 hours 30 minutes ahead of UTC
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const istTime = new Date(utc + (istOffset * 60000));
+      const hours = istTime.getHours();
+
+      let greetingText = '';
+      if (hours < 12) {
+        greetingText = `Good Morning, ${userName}`;
+      } else if (hours < 17) {
+        greetingText = `Good Afternoon, ${userName}`;
+      } else if (hours < 21) {
+        greetingText = `Good Evening, ${userName}`;
+      } else {
+        greetingText = `Good Night, ${userName}`;
+      }
+
+      greetingDiv.textContent = greetingText;
+    }
+
+    // Calculate Menstrual Cycle Phases
+    function calculatePhases(date) {
+      const cycleStart = new Date(startDate);
+      const daysSinceStart = Math.floor((date - cycleStart) / (1000 * 60 * 60 * 24));
+      const cycleDay = daysSinceStart % cycleLength;
+
+      const periodEnd = periodLength;
+      const preMenstrualStart = cycleLength - 4;
+      const postMenstrualStart = periodEnd;
+      const postMenstrualEnd = periodEnd + 5;
+
+      if (cycleDay >= 0 && cycleDay < periodEnd) return 'red'; // Menstruation
+      if (cycleDay >= preMenstrualStart && cycleDay < cycleLength) return 'yellow'; // Pre-menstrual
+      if (cycleDay >= postMenstrualStart && cycleDay < postMenstrualEnd) return 'blue'; // Post-menstrual
+      return 'green'; // Luteal/Fertile
+    }
+
+    // Handle Missed Logging
+    function checkMissedLogging() {
+      const yesterday = new Date(currentDate);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      const yesterdayPhase = calculatePhases(yesterday);
+
+      if (yesterdayPhase === 'red' && (!dailyLogs[yesterdayStr] || !dailyLogs[yesterdayStr].flowClickCount)) {
+        dailyLogs[yesterdayStr] = dailyLogs[yesterdayStr] || {};
+        dailyLogs[yesterdayStr].phase = 'yellow';
+        startDate.setDate(startDate.getDate() + 1);
+        localStorage.setItem('profileData', JSON.stringify({ ...profileData, lastPeriod: startDate.toISOString().split('T')[0] }));
+        localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
+      }
+    }
+
+    // Render Calendar
+    function renderCalendar() {
+      checkMissedLogging();
+      calendarGrid.innerHTML = '';
+      const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const startDay = monthStart.getDay();
+      const daysInMonth = monthEnd.getDate();
+
+      currentMonth.textContent = `${monthStart.toLocaleString('default', { month: 'long' })} ${monthStart.getFullYear()}`;
+
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      days.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        dayHeader.textContent = day;
+        calendarGrid.appendChild(dayHeader);
+      });
+
+      for (let i = 0; i < startDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'calendar-day empty';
+        calendarGrid.appendChild(emptyDay);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const dateStr = date.toISOString().split('T')[0];
+        const phase = dailyLogs[dateStr]?.phase || calculatePhases(date);
+        const flowClickCount = dailyLogs[dateStr]?.flowClickCount || 0;
+        let flow = '';
+        if (flowClickCount === 1) flow = 'light';
+        else if (flowClickCount === 2) flow = 'medium';
+        else if (flowClickCount === 3) flow = 'heavy';
+
+        const dayDiv = document.createElement('div');
+        dayDiv.className = `calendar-day ${phase}`;
+        dayDiv.innerHTML = `
+          <div class="date-circle">
+            ${phase === 'red' && flow ? `<div class="flow-fill ${flow}"></div>` : ''}
+            <span style="position: relative; z-index: 1;">${day}</span>
+          </div>
+        `;
+
+        if (phase === 'red') {
+          dayDiv.addEventListener('click', () => {
+            let currentClickCount = (dailyLogs[dateStr]?.flowClickCount || 0) + 1;
+            if (currentClickCount > 4) currentClickCount = 0;
+
+            dailyLogs[dateStr] = dailyLogs[dateStr] || {};
+            dailyLogs[dateStr].flowClickCount = currentClickCount;
+            dailyLogs[dateStr].phase = phase;
+            localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
+            renderCalendar();
+          });
+        }
+
+        calendarGrid.appendChild(dayDiv);
+      }
+    }
+
+    // Calendar Navigation
+    prevMonth.addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    });
+    nextMonth.addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    });
+
+    // Mood Tracker
+    moodEmojis.querySelectorAll('.emoji').forEach(emoji => {
+      emoji.addEventListener('click', () => {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        moodEmojis.querySelectorAll('.emoji').forEach(e => e.classList.remove('selected'));
+        emoji.classList.add('selected');
+        dailyLogs[dateStr] = dailyLogs[dateStr] || {};
+        dailyLogs[dateStr].mood = emoji.dataset.mood;
+        localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
+      });
+    });
+
+    function loadWaterTracker() {
+  const dateStr = currentDate.toISOString().split('T')[0];
+  fetch(`/api/water?date=${dateStr}`, {
+    headers: { 'Authorization': 'Bearer ' + getToken() }
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      waterCount = data.water_intake || 0;
+      const glasses = waterGlasses.querySelectorAll('.glass');
+      glasses.forEach((glass, index) => {
+        glass.className = `glass ${index < waterCount ? 'filled' : 'empty'}`;
+      });
+    });
+}
+
+    // Save water intake to backend
+function saveWaterTracker() {
+  const dateStr = currentDate.toISOString().split('T')[0];
+  console.log("0");
+  fetch('/api/water', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getToken()
+    },
+    body: JSON.stringify({ date: dateStr, water_intake: waterCount })
+  });
+}
+
+    // Water Tracker
+    let waterCount = 0;
+    addWaterBtn.addEventListener('click', () => {
+      /*const dateStr = currentDate.toISOString().split('T')[0];
+      waterCount = (dailyLogs[dateStr]?.water || 0) + 1;
+      if (waterCount > 6) waterCount = 6;
+
+      dailyLogs[dateStr] = dailyLogs[dateStr] || {};
+      dailyLogs[dateStr].water = waterCount;
+      localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs)); */
+
+      if (waterCount < 6) {
+    waterCount++;
+    saveWaterTracker();
+    loadWaterTracker();
+  }
+
+      /* const glasses = waterGlasses.querySelectorAll('.glass');
+      glasses.forEach((glass, index) => {
+        glass.className = `glass ${index < waterCount ? 'filled' : 'empty'}`;
+      }); */
+    });
+
+    subtractWaterBtn.addEventListener('click', () => {
+      /* const dateStr = currentDate.toISOString().split('T')[0];
+      waterCount = (dailyLogs[dateStr]?.water || 0) - 1;
+      if (waterCount < 0) waterCount = 0;
+
+      dailyLogs[dateStr] = dailyLogs[dateStr] || {};
+      dailyLogs[dateStr].water = waterCount;
+      localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs)); */
+
+      if (waterCount > 0) {
+    waterCount--;
+    saveWaterTracker();
+    loadWaterTracker();
+  }
+
+
+      /* const glasses = waterGlasses.querySelectorAll('.glass');
+      glasses.forEach((glass, index) => {
+        glass.className = `glass ${index < waterCount ? 'filled' : 'empty'}`;
+      }); */
+    });
+
+    // Symptoms Tracker
+    symptomsBtn.addEventListener('click', () => {
+      symptomsContent.classList.toggle('open');
+      symptomsBtn.textContent = symptomsContent.classList.contains('open') ? 'Log your symptoms ∧' : 'Log your symptoms ⌄';
+    });
+
+    saveSymptomsBtn.addEventListener('click', () => {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      const checkboxes = symptomsContent.querySelectorAll('input[type="checkbox"]:checked');
+      const customSymptom = document.getElementById('customSymptom').value.trim();
+      const symptoms = Array.from(checkboxes).map(cb => cb.value);
+      if (customSymptom) symptoms.push(customSymptom);
+
+      dailyLogs[dateStr] = dailyLogs[dateStr] || {};
+      dailyLogs[dateStr].symptoms = symptoms;
+      localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
+      symptomsContent.classList.remove('open');
+      symptomsBtn.textContent = 'Log your symptoms ⌄';
+    });
+
+    // Side Drawer
+    menuIcon.addEventListener('click', () => {
+      sideDrawer.classList.add('open');
+    });
+    closeDrawerBtn.addEventListener('click', () => {
+      sideDrawer.classList.remove('open');
+    });
+
+    // Profile Dropdown
+    profileIcon.addEventListener('click', () => {
+      profileDropdown.classList.toggle('open');
+    });
+
+    editInfoBtn.addEventListener('click', () => {
+      window.location.href = 'popup';
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userPassword');
+      localStorage.removeItem('hasRegistered');
+      localStorage.removeItem('profileData');
+      localStorage.removeItem('dailyLogs');
+      alert('Logged out successfully!');
+      window.location.href = 'register';
+    });
+
+    // Initial Render
+    displayGreeting();
+    renderCalendar();
+    loadWaterTracker();
+  </script>
 </body>
-
-<style>
-  /* === NAV BAR === */
-  nav {
-    background: #f4daf7;
-    padding: 1rem 2rem;
-    border-radius: 0 0 20px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    font-family: 'Dancing Script', cursive;
-    box-shadow: 0 4px 8px rgb(244 218 247 / 0.4);
-  }
-  nav h1 {
-    font-size: 1.8rem;
-    color: #e06ba9;
-  }
-  nav h4 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #d94c97;
-    font-size: 1rem;
-  }
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-  }
-  nav ul li a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #a64c7b;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-  }
-  nav ul li a:hover {
-    color: #e06ba9;
-  }
-</style>
-
-
 </html>

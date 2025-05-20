@@ -556,7 +556,8 @@
     let currentDate = new Date('2025-05-17');
     let selectedDate = new Date(currentDate);
     let dailyLogs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
-
+    let mood = 'neutral';
+    let flowLevel = 'none';
     // Load profile data
     const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
     let startDate = profileData.lastPeriod ? new Date(profileData.lastPeriod) : new Date('2025-05-01');
@@ -617,19 +618,19 @@
 
     // Calculate Menstrual Cycle Phases
     function calculatePhases(date) {
-      const cycleStart = new Date(startDate);
-      const daysSinceStart = Math.floor((date - cycleStart) / (1000 * 60 * 60 * 24));
-      const cycleDay = daysSinceStart % cycleLength;
+        const cycleStart = new Date(startDate);
+        const daysSinceStart = Math.floor((date - cycleStart) / (1000 * 60 * 60 * 24));
+        const cycleDay = daysSinceStart % cycleLength;
 
-      const periodEnd = periodLength;
-      const preMenstrualStart = cycleLength - 4;
-      const postMenstrualStart = periodEnd;
-      const postMenstrualEnd = periodEnd + 5;
+        const periodEnd = periodLength;
+        const preMenstrualStart = cycleLength - 4;
+        const postMenstrualStart = periodEnd;
+        const postMenstrualEnd = periodEnd + 5;
 
-      if (cycleDay >= 0 && cycleDay < periodEnd) return 'red'; // Menstruation
-      if (cycleDay >= preMenstrualStart && cycleDay < cycleLength) return 'yellow'; // Pre-menstrual
-      if (cycleDay >= postMenstrualStart && cycleDay < postMenstrualEnd) return 'blue'; // Post-menstrual
-      return 'green'; // Luteal/Fertile
+        if (cycleDay >= 0 && cycleDay < periodEnd) return 'red'; // Menstruation
+        if (cycleDay >= preMenstrualStart && cycleDay < cycleLength) return 'yellow'; // Pre-menstrual
+        if (cycleDay >= postMenstrualStart && cycleDay < postMenstrualEnd) return 'blue'; // Post-menstrual
+        return 'green'; // Luteal/Fertile
     }
 
     // Handle Missed Logging
@@ -648,88 +649,136 @@
       }
     }
 
-    // Render Calendar
+  // Fetch mood and flow level from backend
+    function loadMoodAndFlow() {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        fetch(`/api/mood-flow?date=${dateStr}`, {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
+            .then(res => res.json())
+            .then(data => {
+                mood = data.mood || 'neutral';
+                flowLevel = data.flow_level || 'none';
+                updateMoodUI();
+                renderCalendar();
+            })
+            .catch(error => {
+                console.error('Error fetching mood and flow:', error);
+            });
+    }
+
+    // Save mood and flow level to backend
+    function saveMoodAndFlow() {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        fetch('/api/mood-flow', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify({ date: dateStr, mood: mood, flow_level: flowLevel })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Mood and flow level saved successfully');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving mood and flow:', error);
+            });
+    }
+
+    // Update mood UI
+    function updateMoodUI() {
+        moodEmojis.querySelectorAll('.emoji').forEach(emoji => {
+            emoji.classList.remove('selected');
+            if (emoji.dataset.mood === mood) {
+                emoji.classList.add('selected');
+            }
+        });
+    }
+
+   // Render Calendar
     function renderCalendar() {
-      checkMissedLogging();
-      calendarGrid.innerHTML = '';
-      const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-      const startDay = monthStart.getDay();
-      const daysInMonth = monthEnd.getDate();
+        checkMissedLogging();
+        calendarGrid.innerHTML = '';
+        const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        const startDay = monthStart.getDay();
+        const daysInMonth = monthEnd.getDate();
 
-      currentMonth.textContent = `${monthStart.toLocaleString('default', { month: 'long' })} ${monthStart.getFullYear()}`;
+        currentMonth.textContent = `${monthStart.toLocaleString('default', { month: 'long' })} ${monthStart.getFullYear()}`;
 
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      days.forEach(day => {
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'day-header';
-        dayHeader.textContent = day;
-        calendarGrid.appendChild(dayHeader);
-      });
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        days.forEach(day => {
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
+            dayHeader.textContent = day;
+            calendarGrid.appendChild(dayHeader);
+        });
 
-      for (let i = 0; i < startDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'calendar-day empty';
-        calendarGrid.appendChild(emptyDay);
-      }
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-        const dateStr = date.toISOString().split('T')[0];
-        const phase = dailyLogs[dateStr]?.phase || calculatePhases(date);
-        const flowClickCount = dailyLogs[dateStr]?.flowClickCount || 0;
-        let flow = '';
-        if (flowClickCount === 1) flow = 'light';
-        else if (flowClickCount === 2) flow = 'medium';
-        else if (flowClickCount === 3) flow = 'heavy';
-
-        const dayDiv = document.createElement('div');
-        dayDiv.className = `calendar-day ${phase}`;
-        dayDiv.innerHTML = `
-          <div class="date-circle">
-            ${phase === 'red' && flow ? `<div class="flow-fill ${flow}"></div>` : ''}
-            <span style="position: relative; z-index: 1;">${day}</span>
-          </div>
-        `;
-
-        if (phase === 'red') {
-          dayDiv.addEventListener('click', () => {
-            let currentClickCount = (dailyLogs[dateStr]?.flowClickCount || 0) + 1;
-            if (currentClickCount > 4) currentClickCount = 0;
-
-            dailyLogs[dateStr] = dailyLogs[dateStr] || {};
-            dailyLogs[dateStr].flowClickCount = currentClickCount;
-            dailyLogs[dateStr].phase = phase;
-            localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
-            renderCalendar();
-          });
+        for (let i = 0; i < startDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            calendarGrid.appendChild(emptyDay);
         }
 
-        calendarGrid.appendChild(dayDiv);
-      }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            const dateStr = date.toISOString().split('T')[0];
+            const phase = dailyLogs[dateStr]?.phase || calculatePhases(date);
+            let flow = flowLevel;
+            if (dateStr !== currentDate.toISOString().split('T')[0]) {
+                flow = 'none'; // Only show flow for the current date
+            }
+
+            const dayDiv = document.createElement('div');
+            dayDiv.className = `calendar-day ${phase}`;
+            dayDiv.innerHTML = `
+                <div class="date-circle">
+                    ${phase === 'red' && flow !== 'none' ? `<div class="flow-fill ${flow}"></div>` : ''}
+                    <span style="position: relative; z-index: 1;">${day}</span>
+                </div>
+            `;
+
+            if (phase === 'red') {
+                dayDiv.addEventListener('click', () => {
+                    const flowLevels = ['none', 'light', 'medium', 'heavy'];
+                    let currentIndex = flowLevels.indexOf(flowLevel);
+                    currentIndex = (currentIndex + 1) % flowLevels.length;
+                    flowLevel = flowLevels[currentIndex];
+                    saveMoodAndFlow();
+                    renderCalendar();
+                });
+            }
+
+            calendarGrid.appendChild(dayDiv);
+        }
     }
 
     // Calendar Navigation
     prevMonth.addEventListener('click', () => {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCalendar();
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+        loadMoodAndFlow();
     });
+
     nextMonth.addEventListener('click', () => {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCalendar();
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+        loadMoodAndFlow();
     });
 
     // Mood Tracker
     moodEmojis.querySelectorAll('.emoji').forEach(emoji => {
-      emoji.addEventListener('click', () => {
-        const dateStr = currentDate.toISOString().split('T')[0];
-        moodEmojis.querySelectorAll('.emoji').forEach(e => e.classList.remove('selected'));
-        emoji.classList.add('selected');
-        dailyLogs[dateStr] = dailyLogs[dateStr] || {};
-        dailyLogs[dateStr].mood = emoji.dataset.mood;
-        localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
-      });
+        emoji.addEventListener('click', () => {
+            mood = emoji.dataset.mood;
+            updateMoodUI();
+            saveMoodAndFlow();
+        });
     });
+
 
     function loadWaterTracker() {
   const dateStr = currentDate.toISOString().split('T')[0];
@@ -808,56 +857,58 @@ function saveWaterTracker() {
 
     // Symptoms Tracker
     symptomsBtn.addEventListener('click', () => {
-      symptomsContent.classList.toggle('open');
-      symptomsBtn.textContent = symptomsContent.classList.contains('open') ? 'Log your symptoms ∧' : 'Log your symptoms ⌄';
+        symptomsContent.classList.toggle('open');
+        symptomsBtn.textContent = symptomsContent.classList.contains('open') ? 'Log your symptoms ∧' : 'Log your symptoms ⌄';
     });
 
     saveSymptomsBtn.addEventListener('click', () => {
-      const dateStr = currentDate.toISOString().split('T')[0];
-      const checkboxes = symptomsContent.querySelectorAll('input[type="checkbox"]:checked');
-      const customSymptom = document.getElementById('customSymptom').value.trim();
-      const symptoms = Array.from(checkboxes).map(cb => cb.value);
-      if (customSymptom) symptoms.push(customSymptom);
+        const dateStr = currentDate.toISOString().split('T')[0];
+        const checkboxes = symptomsContent.querySelectorAll('input[type="checkbox"]:checked');
+        const customSymptom = document.getElementById('customSymptom').value.trim();
+        const symptoms = Array.from(checkboxes).map(cb => cb.value);
+        if (customSymptom) symptoms.push(customSymptom);
 
-      dailyLogs[dateStr] = dailyLogs[dateStr] || {};
-      dailyLogs[dateStr].symptoms = symptoms;
-      localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
-      symptomsContent.classList.remove('open');
-      symptomsBtn.textContent = 'Log your symptoms ⌄';
+        dailyLogs[dateStr] = dailyLogs[dateStr] || {};
+        dailyLogs[dateStr].symptoms = symptoms;
+        localStorage.setItem('dailyLogs', JSON.stringify(dailyLogs));
+        symptomsContent.classList.remove('open');
+        symptomsBtn.textContent = 'Log your symptoms ⌄';
     });
 
     // Side Drawer
     menuIcon.addEventListener('click', () => {
-      sideDrawer.classList.add('open');
+        sideDrawer.classList.add('open');
     });
+
     closeDrawerBtn.addEventListener('click', () => {
-      sideDrawer.classList.remove('open');
+        sideDrawer.classList.remove('open');
     });
 
     // Profile Dropdown
     profileIcon.addEventListener('click', () => {
-      profileDropdown.classList.toggle('open');
+        profileDropdown.classList.toggle('open');
     });
 
     editInfoBtn.addEventListener('click', () => {
-      window.location.href = 'popup';
+        window.location.href = 'popup';
     });
 
     // Logout
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userPassword');
-      localStorage.removeItem('hasRegistered');
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('dailyLogs');
-      alert('Logged out successfully!');
-      window.location.href = 'register';
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userPassword');
+        localStorage.removeItem('hasRegistered');
+        localStorage.removeItem('profileData');
+        localStorage.removeItem('dailyLogs');
+        alert('Logged out successfully!');
+        window.location.href = 'register';
     });
 
     // Initial Render
     displayGreeting();
     renderCalendar();
     loadWaterTracker();
-  </script>
+    loadMoodAndFlow();
+</script>
 </body>
 </html>

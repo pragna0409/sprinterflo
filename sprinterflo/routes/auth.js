@@ -60,6 +60,42 @@ router.post('/api/water', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/api/mood-flow', authenticateToken, async (req, res) => {
+    const { date } = req.query;
+    try {
+        let db = await dbPromise;
+        const [results] = await db.execute(
+            'SELECT mood, flow_level FROM daily_logs WHERE user_id = ? AND log_date = ?',
+            [req.user.id, date]
+        );
+        res.json({
+            mood: results[0]?.mood || 'neutral',
+            flow_level: results[0]?.flow_level || 'none'
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'DB error' });
+    }
+});
+
+// Set mood and flow level for a date
+router.post('/api/mood-flow', authenticateToken, async (req, res) => {
+    const { date, mood, flow_level } = req.body;
+    try {
+        let db = await dbPromise;
+        await db.execute(
+            `INSERT INTO daily_logs (user_id, log_date, mood, flow_level)
+             VALUES (?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE mood = ?, flow_level = ?`,
+            [req.user.id, date, mood, flow_level, mood, flow_level]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'DB error' });
+    }
+});
+
 router.post('/register', authController.register)
 
 router.post('/login', authController.login);

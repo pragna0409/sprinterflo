@@ -23,6 +23,30 @@ router.get('/dashboard', (req, res) => {
     res.render('dashboard');
 });
 
+router.get('/settings', (req, res) => {
+
+    res.render('settings');
+});
+
+router.get('/about', (req, res) => {
+
+    res.render('about');
+}); 
+
+router.get('/fridge', (req, res) => {
+    //if (!req.session.userId) {
+    //  return res.redirect('/login');
+    //}
+    res.render('fridge');
+});
+
+router.get('/exercise', (req, res) => {
+   
+    res.render('exercise');
+});
+
+
+
 router.get('/popup', (req, res) => {
     if (!req.session.userId) {
         return res.redirect('/login');
